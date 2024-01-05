@@ -52,6 +52,7 @@ function update() {
 
   // Reset for next level
   if (piglets.length == 0){
+    play("tone");
     level++;
     deadPiglets = [];
     for (l=1; l<=level; l++){
