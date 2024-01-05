@@ -32,7 +32,10 @@ let deadPiglets;
 /** @type {Vector} */
 let tigger;
 
-options = {isPlayingBgm: false};
+options = {
+  isPlayingBgm: true,
+  seed: 5
+};
 
 function update() {
   if (!ticks) {
@@ -52,7 +55,7 @@ function update() {
 
   // Reset for next level
   if (piglets.length == 0){
-    play("tone");
+    play("powerUp");
     level++;
     deadPiglets = [];
     for (l=1; l<=level; l++){
