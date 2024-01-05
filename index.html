@@ -67,14 +67,14 @@ function update() {
   // Move tigger towards mouse/touch
   if (input.isPressed)
   {
-    if (input.pos.x > tigger.x){
+    if (input.pos.x > tigger.x && tigger.x < 95){
       tigger.x += tigMoveDist;
-    } else if (input.pos.x < tigger.x) {
+    } else if (input.pos.x < tigger.x && tigger.x > 5) {
       tigger.x -= tigMoveDist;
     }
-    if (input.pos.y > tigger.y){
+    if (input.pos.y > tigger.y && tigger.y < 95){
       tigger.y += tigMoveDist;
-    } else if (input.pos.y < tigger.y) {
+    } else if (input.pos.y < tigger.y && tigger.y > 5) {
       tigger.y -= tigMoveDist;
     }
   }
