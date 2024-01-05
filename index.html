@@ -44,12 +44,12 @@ options = {
 
 function update() {
   if (!ticks) {
-    screensize = 100;
+    screensize = options.viewSize.x;
     level = 1;
     piglets = [];
     deadPiglets = [];
-    pigMoveDist = 0.1;
-    tigMoveDist = 0.2;
+    pigMoveDist = screensize/1000;
+    tigMoveDist = screensize/500;
     pigletColor = "light_red";
     deadPigletColor = "black";
     tiggerColor = "red";
