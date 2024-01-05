@@ -22,39 +22,78 @@ Escape the
  piglets!
 `;
 
-characters = [];
+characters = [
+`
+  rrr  
+ rryrr 
+  ryr
+ rrrrr
+   r  
+  r   
+`,
+`
+  rrr  
+ rryrr 
+  ryr
+ rrrrr
+   r  
+    r
+`,
+`
+ R 
+RRR
+ R 
+R R
+`,
+`
+ R 
+RRR
+ R 
+ R 
+`,
+`
+ L 
+LLL
+ L 
+L L
+`
+];
 
 /** @type {Vector[]} */
 let piglets;
 /** @type {Vector[]} */
 let deadPiglets;
-
 /** @type {Vector} */
 let tigger;
+
+const G = {
+  SCREENSIZE: 100,
+  PIGLETSIZE: 3,
+  TIGGERSIZE: 5,
+  PIGLETSPEED: 0.1,
+  TIGGERSPEED: 0.2,
+  PIGLETCOLOR: "light_red",
+  DEADPIGLETCOLOR: "black",
+  TIGGERCOLOR: "red"
+}
 
 options = {
   isReplayEnabled: true,
   isPlayingBgm: true,
   seed: 5,
   viewSize: {
-    x: 100,
-    y: 100
+    x: G.SCREENSIZE,
+    y: G.SCREENSIZE
   }
 };
 
 function update() {
   if (!ticks) {
-    screensize = options.viewSize.x;
     level = 1;
     piglets = [];
     deadPiglets = [];
-    pigMoveDist = screensize/1000;
-    tigMoveDist = screensize/500;
-    pigletColor = "light_red";
-    deadPigletColor = "black";
-    tiggerColor = "red";
-    pigSize = 3;
-    tiggerSize = 5;
+    pigMoveDist = G.SCREENSIZE/100*G.PIGLETSPEED;
+    tigMoveDist = G.SCREENSIZE/100*G.TIGGERSPEED;
   }
 
   // Reset for next level
@@ -62,48 +101,55 @@ function update() {
     play("powerUp");
     level++;
     deadPiglets = [];
-    for (l=1; l<=level; l++){
+    times(level, (l) => {
       // Spread the piglets around the perimeter
       if (l%4==3){ 
         // top
-        piglets.push(vec(rnd(pigSize,screensize-pigSize), rnd(pigSize,screensize/5)));
+        piglets.push(vec(rnd(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE), rnd(G.PIGLETSIZE,G.SCREENSIZE/5)));
       } else if (l%4==2){ 
         // right
-        piglets.push(vec(rnd(screensize-screensize/5,screensize-pigSize), rnd(pigSize,screensize-pigSize)));
+        piglets.push(vec(rnd(G.SCREENSIZE-G.SCREENSIZE/5,G.SCREENSIZE-G.PIGLETSIZE), rnd(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE)));
       } else if (l%4==1){ 
         // bottom
-        piglets.push(vec(rnd(pigSize,screensize-pigSize), rnd(screensize-screensize/5,screensize-pigSize)));
+        piglets.push(vec(rnd(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE), rnd(G.SCREENSIZE-G.SCREENSIZE/5,G.SCREENSIZE-G.PIGLETSIZE)));
       } else {
         // left
-        piglets.push(vec(rnd(pigSize,screensize/5), rnd(pigSize,screensize-pigSize)));
+        piglets.push(vec(rnd(G.PIGLETSIZE,G.SCREENSIZE/5), rnd(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE)));
       }
-    }
+    });
     // Put tigger in the middle
-    tigger = vec(screensize/2,screensize/2);
+    tigger = vec(G.SCREENSIZE/2,G.SCREENSIZE/2);
   }
 
   // Move tigger towards mouse/touch
   if (input.isPressed)
   {
-    if (clamp(input.pos.x, tiggerSize, screensize-tiggerSize) > tigger.x){
+    if (input.pos.x > tigger.x){
       tigger.x += tigMoveDist;
-    } else if (clamp(input.pos.x, tiggerSize, screensize-tiggerSize) < tigger.x) {
+    } else if (input.pos.x < tigger.x) {
       tigger.x -= tigMoveDist;
     }
-    if (clamp(input.pos.y, tiggerSize, screensize-tiggerSize) > tigger.y){
+    if (input.pos.y > tigger.y){
       tigger.y += tigMoveDist;
-    } else if (clamp(input.pos.y, tiggerSize, screensize-tiggerSize) < tigger.y) {
+    } else if (input.pos.y < tigger.y) {
       tigger.y -= tigMoveDist;
     }
+    tigger.clamp(G.TIGGERSIZE, G.SCREENSIZE-G.TIGGERSIZE, G.TIGGERSIZE, G.SCREENSIZE-G.TIGGERSIZE);
   }
 
   // Draw tigger
-  color(tiggerColor);
-  box(tigger, tiggerSize);
-
+  // color(G.TIGGERCOLOR);
+  // box(tigger, G.TIGGERSIZE);
+  if (ticks%20<10)
+  {
+    char("a", tigger);
+  } else {
+    char("b", tigger);
+  }
+  
   // Check for game-ending collisions
-  piglets.forEach((pn) => {
-    if (abs(pn.x-tigger.x)<((pigSize+tiggerSize)/2) && abs(pn.y-tigger.y)<((pigSize+tiggerSize)/2)) {
+  piglets.forEach((p) => {
+    if (abs(p.x-tigger.x)<((G.PIGLETSIZE+G.TIGGERSIZE)/2) && abs(p.y-tigger.y)<((G.PIGLETSIZE+G.TIGGERSIZE)/2)) {
       play("explosion");
       end();
     }
@@ -127,13 +173,13 @@ function update() {
   remove(piglets, (p) => {
     dead = false;
     deadPiglets.forEach((pn) => {
-      if (p != pn && abs(pn.x-p.x)<pigSize && abs(pn.y-p.y)<pigSize) {
+      if (p != pn && abs(pn.x-p.x)<G.PIGLETSIZE && abs(pn.y-p.y)<G.PIGLETSIZE) {
         dead = true;
       }
     });
     if (!dead){
       piglets.forEach((pn) => {
-        if (p != pn && abs(pn.x-p.x)<pigSize && abs(pn.y-p.y)<pigSize) {
+        if (p != pn && abs(pn.x-p.x)<G.PIGLETSIZE && abs(pn.y-p.y)<G.PIGLETSIZE) {
           dead = true;
         }
       });
@@ -148,15 +194,22 @@ function update() {
   });
 
   // Draw piglets that are still alive
+  // color(G.PIGLETCOLOR);
   piglets.forEach((p) => {
-    color(pigletColor);
-    box(p, pigSize);
+    //box(p, G.PIGLETSIZE);
+    if (ticks%20<10)
+    {
+      char("c", p);
+    } else {
+      char("d", p);
+    }
   });
 
   // Draw dead piglets
+  // color(G.DEADPIGLETCOLOR);
   deadPiglets.forEach((p) => {
-    color(deadPigletColor);
-    box(p, pigSize);
+    // box(p, G.PIGLETSIZE);
+    char("e", p);
   });
 }
 
