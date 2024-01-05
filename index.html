@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>crisp-game-lib</title>
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height,
+    user-scalable=no, initial-scale=1, maximum-scale=1"
+    />
+    <script src="https://unpkg.com/sounds-some-sounds@3.0.0/build/index.js"></script>
+    <script src="https://unpkg.com/gif-capture-canvas@1.1.0/build/index.js"></script>
+    <script src="https://unpkg.com/pixi.js@5.3.0/dist/pixi.min.js"></script>
+    <script src="https://unpkg.com/pixi-filters@3.1.1/dist/pixi-filters.js"></script>
+    <script src="https://unpkg.com/crisp-game-lib@1.1.1/docs/bundle.js"></script>
+
+<script>
+title = "Tigger Game";
+
+description = `
+Escape the
+ piglets!
+`;
+
+characters = [];
+
+/** @type {Vector[]} */
+let piglets;
+/** @type {Vector[]} */
+let deadPiglets;
+
+/** @type {Vector} */
+let tigger;
+
+options = {};
+
+function update() {
+  if (!ticks) {
+    tigger = vec(50,50);
+    level = 1;
+    piglets = [];
+    deadPiglets = [];
+    nextPigDist = 5; 
+    pigMoveDist = 0.1;
+    tigMoveDist = 0.2;
+    pigletColor = "light_red";
+    deadPigletColor = "black";
+    tiggerColor = "red";
+    pigSize = 3;
+    tiggerSize = 5;
+  }
+
+  // Reset for next level
+  if (piglets.length == 0){
+    level++;
+    deadPiglets = [];
+    for (l=1; l<=level; l++){
+      if (l%2==0){ 
+        piglets.push(vec(rnd(5,95), rnd(5,20)));
+      } else {
+        piglets.push(vec(rnd(5,95), rnd(80,95)));
+      }
+    }
+    tigger = vec(50,50);
+  }
+
+  // Move tigger towards mouse/touch
+  if (input.isPressed)
+  {
+    if (input.pos.x > tigger.x){
+      tigger.x += tigMoveDist;
+    } else if (input.pos.x < tigger.x) {
+      tigger.x -= tigMoveDist;
+    }
+    if (input.pos.y > tigger.y){
+      tigger.y += tigMoveDist;
+    } else if (input.pos.y < tigger.y) {
+      tigger.y -= tigMoveDist;
+    }
+  }
+
+  // Draw tigger
+  color(tiggerColor);
+  box(tigger, tiggerSize);
+
+  // Check for game-ending collisions
+  piglets.forEach((pn) => {
+    if (abs(pn.x-tigger.x)<((pigSize+tiggerSize)/2) && abs(pn.y-tigger.y)<((pigSize+tiggerSize)/2)) {
+      end();
+    }
+  });
+
+  // Move piglets
+  piglets.forEach((p) => {
+    if (tigger.x > p.x){
+      p.x += pigMoveDist;
+    } else if (tigger.x < p.x) {
+      p.x -= pigMoveDist;
+    }
+    if (tigger.y > p.y){
+      p.y += pigMoveDist;
+    } else if (tigger.y < p.y) {
+      p.y -= pigMoveDist;
+    }
+  });
+
+  // Check for piglet-ending collisions
+  remove(piglets, (p) => {
+    dead = false;
+    deadPiglets.forEach((pn) => {
+      if (p != pn && abs(pn.x-p.x)<pigSize && abs(pn.y-p.y)<pigSize) {
+        dead = true;
+      }
+    });
+    if (!dead){
+      piglets.forEach((pn) => {
+        if (p != pn && abs(pn.x-p.x)<pigSize && abs(pn.y-p.y)<pigSize) {
+          dead = true;
+        }
+      });
+    }
+    if (dead){
+      deadPiglets.push(p);
+        addScore(1,p);
+    };
+    return dead;
+  });
+
+  // Draw piglets that are still alive
+  piglets.forEach((p) => {
+    color(pigletColor);
+    box(p, pigSize);
+  });
+
+  // Draw dead piglets
+  deadPiglets.forEach((p) => {
+    color(deadPigletColor);
+    box(p, pigSize);
+  });
+}
+
+addEventListener("load", onLoad);
+</script>
+
+  </head>
+  <body style="background: #ddd"></body>
+</html>
