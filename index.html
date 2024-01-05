@@ -145,7 +145,7 @@ function update() {
         tigger.y = input.pos.y;
       }
     } else if (input.pos.y < tigger.y) {
-      if (input.pos.y - tigger.y > tigMoveDist){
+      if (tigger.y - input.pos.y > tigMoveDist){
         tigger.y -= tigMoveDist;
       } else {
         tigger.y = input.pos.y;
