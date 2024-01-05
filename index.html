@@ -40,7 +40,8 @@ options = {
 
 function update() {
   if (!ticks) {
-    tigger = vec(50,50);
+    screensize = 100;
+    tigger = vec(screensize/2,screensize/2);
     level = 1;
     piglets = [];
     deadPiglets = [];
@@ -60,26 +61,34 @@ function update() {
     level++;
     deadPiglets = [];
     for (l=1; l<=level; l++){
-      if (l%2==0){ 
-        piglets.push(vec(rnd(5,95), rnd(5,20)));
+      if (l%4==3){ 
+        // top
+        piglets.push(vec(rnd(pigSize,screensize-pigSize), rnd(pigSize,screensize/5)));
+      } else if (l%4==2){ 
+        // right
+        piglets.push(vec(rnd(screensize-screensize/5,screensize-pigSize), rnd(pigSize,screensize-pigSize)));
+      } else if (l%4==1){ 
+        // bottom
+        piglets.push(vec(rnd(pigSize,screensize-pigSize), rnd(screensize-screensize/5,screensize-pigSize)));
       } else {
-        piglets.push(vec(rnd(5,95), rnd(80,95)));
+        // left
+        piglets.push(vec(rnd(pigSize,screensize/5), rnd(pigSize,screensize-pigSize)));
       }
     }
-    tigger = vec(50,50);
+    tigger = vec(screensize/2,screensize/2);
   }
 
   // Move tigger towards mouse/touch
   if (input.isPressed)
   {
-    if (input.pos.x > tigger.x && tigger.x < 95){
+    if (input.pos.x > tigger.x && tigger.x < screensize-tiggerSize){
       tigger.x += tigMoveDist;
-    } else if (input.pos.x < tigger.x && tigger.x > 5) {
+    } else if (input.pos.x < tigger.x && tigger.x > tiggerSize) {
       tigger.x -= tigMoveDist;
     }
-    if (input.pos.y > tigger.y && tigger.y < 95){
+    if (input.pos.y > tigger.y && tigger.y < screensize-tiggerSize){
       tigger.y += tigMoveDist;
-    } else if (input.pos.y < tigger.y && tigger.y > 5) {
+    } else if (input.pos.y < tigger.y && tigger.y > tiggerSize) {
       tigger.y -= tigMoveDist;
     }
   }
