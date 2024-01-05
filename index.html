@@ -106,16 +106,16 @@ function update() {
       // Spread the piglets around the perimeter
       if (l%4==3){ 
         // top
-        piglets.push(vec(rnd(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE), rnd(G.PIGLETSIZE,G.SCREENSIZE/5)));
+        piglets.push(vec(rndi(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE), rndi(G.PIGLETSIZE,G.SCREENSIZE/5)));
       } else if (l%4==2){ 
         // right
-        piglets.push(vec(rnd(G.SCREENSIZE-G.SCREENSIZE/5,G.SCREENSIZE-G.PIGLETSIZE), rnd(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE)));
+        piglets.push(vec(rndi(G.SCREENSIZE-G.SCREENSIZE/5,G.SCREENSIZE-G.PIGLETSIZE), rndi(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE)));
       } else if (l%4==1){ 
         // bottom
-        piglets.push(vec(rnd(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE), rnd(G.SCREENSIZE-G.SCREENSIZE/5,G.SCREENSIZE-G.PIGLETSIZE)));
+        piglets.push(vec(rndi(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE), rndi(G.SCREENSIZE-G.SCREENSIZE/5,G.SCREENSIZE-G.PIGLETSIZE)));
       } else {
         // left
-        piglets.push(vec(rnd(G.PIGLETSIZE,G.SCREENSIZE/5), rnd(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE)));
+        piglets.push(vec(rndi(G.PIGLETSIZE,G.SCREENSIZE/5), rndi(G.PIGLETSIZE,G.SCREENSIZE-G.PIGLETSIZE)));
       }
     });
     // Put tigger in the middle
@@ -175,14 +175,30 @@ function update() {
   // Move piglets
   piglets.forEach((p) => {
     if (tigger.x > p.x){
-      p.x += pigMoveDist;
+      if (tigger.x - p.x > pigMoveDist){
+        p.x += pigMoveDist;
+      } else {
+        p.x = tigger.x;
+      }
     } else if (tigger.x < p.x) {
-      p.x -= pigMoveDist;
+      if (p.x - tigger.x> pigMoveDist){
+        p.x -= pigMoveDist;
+      } else {
+        p.x = tigger.x;
+      }
     }
     if (tigger.y > p.y){
-      p.y += pigMoveDist;
+      if (tigger.y - p.y > pigMoveDist){
+        p.y += pigMoveDist;
+      } else {
+        p.y = tigger.y;
+      }
     } else if (tigger.y < p.y) {
-      p.y -= pigMoveDist;
+      if (p.y - tigger.y > pigMoveDist){
+        p.y -= pigMoveDist;
+      } else {
+        p.y = tigger.y;
+      }
     }
   });
 
