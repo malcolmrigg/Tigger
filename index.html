@@ -126,14 +126,30 @@ function update() {
   if (input.isPressed)
   {
     if (input.pos.x > tigger.x){
-      tigger.x += tigMoveDist;
+      if (input.pos.x - tigger.x > tigMoveDist){
+        tigger.x += tigMoveDist;
+      } else {
+        tigger.x = input.pos.x;
+      }
     } else if (input.pos.x < tigger.x) {
-      tigger.x -= tigMoveDist;
+      if (tigger.x - input.pos.x > tigMoveDist){
+        tigger.x -= tigMoveDist;
+      } else {
+        tigger.x = input.pos.x;
+      }
     }
     if (input.pos.y > tigger.y){
-      tigger.y += tigMoveDist;
+      if (input.pos.y - tigger.y > tigMoveDist){
+        tigger.y += tigMoveDist;
+      } else {
+        tigger.y = input.pos.y;
+      }
     } else if (input.pos.y < tigger.y) {
-      tigger.y -= tigMoveDist;
+      if (input.pos.y - tigger.y > tigMoveDist){
+        tigger.y -= tigMoveDist;
+      } else {
+        tigger.y = input.pos.y;
+      }
     }
     tigger.clamp(G.TIGGERSIZE, G.SCREENSIZE-G.TIGGERSIZE, G.TIGGERSIZE, G.SCREENSIZE-G.TIGGERSIZE);
   }
